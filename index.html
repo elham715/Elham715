@@ -127,7 +127,6 @@ th {
 
 /* Specific cell backgrounds using linear gradients */
 .early { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
-/* .biochem { background: linear-gradient(135deg, #11998e, #38ef7d); } Removed as it's replaced by bmb-self */
 .business { background: linear-gradient(135deg, #ee0979, #ff6a00); }
 .ml { background: linear-gradient(135deg, #7F00FF, #E100FF); }
 .other { background: linear-gradient(135deg, #ff9966, #ff5e62); }
@@ -199,7 +198,7 @@ td:hover {
     text-align: center;
 }
 
-.namaj-table {
+.namaj-table, .daily-schedule-table {
     width: 80%;
     max-width: 400px;
     border-collapse: separate;
@@ -211,7 +210,8 @@ td:hover {
     overflow: hidden;
 }
 
-.namaj-table th, .namaj-table td {
+.namaj-table th, .namaj-table td,
+.daily-schedule-table th, .daily-schedule-table td {
     padding: 10px 15px;
     border-radius: 8px;
     font-size: 1rem;
@@ -220,7 +220,7 @@ td:hover {
     vertical-align: middle;
 }
 
-.namaj-table th {
+.namaj-table th, .daily-schedule-table th {
     background: linear-gradient(135deg, #4CAF50, #2E8B57);
     color: #fff;
     font-weight: 700;
@@ -229,11 +229,13 @@ td:hover {
     box-shadow: 0 1px 5px rgba(0,0,0,0.2);
 }
 
-.namaj-table tr:nth-child(even) td {
+.namaj-table tr:nth-child(even) td,
+.daily-schedule-table tr:nth-child(even) td {
     background-color: #333333;
 }
 
-.namaj-table tr:nth-child(odd) td {
+.namaj-table tr:nth-child(odd) td,
+.daily-schedule-table tr:nth-child(odd) td {
     background-color: #2a2a2a;
 }
 
@@ -273,7 +275,7 @@ td:hover {
     table {
         min-width: 900px;
     }
-    .namaj-table {
+    .namaj-table, .daily-schedule-table {
         width: 95%;
     }
     .important-notes-card {
@@ -303,7 +305,8 @@ td:hover {
     .notes-container h2 {
         font-size: 1.5rem;
     }
-    .namaj-table th, .namaj-table td {
+    .namaj-table th, .namaj-table td,
+    .daily-schedule-table th, .daily-schedule-table td {
         font-size: 0.9rem;
         padding: 8px 10px;
     }
@@ -317,6 +320,21 @@ td:hover {
 
 <h1>Weekly Study Routine To-Do</h1>
 <button id="toggleLandscapeBtn">🌄 Toggle Landscape View</button>
+
+<div id="dailyScheduleContainer" class="notes-container">
+    <h2>Today's Schedule</h2>
+    <table id="dailyScheduleTable" class="daily-schedule-table">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Activity</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Daily schedule will be populated here by JavaScript -->
+        </tbody>
+    </table>
+</div>
 
 <div class="table-container" id="tableContainer">
     <table id="routineTable">
@@ -355,7 +373,7 @@ td:hover {
                 <td class="teach-megha">Teach Megha</td>
                 <td class="teach-megha">Teach Megha</td>
                 <td class="blank-cell">Break</td>
-                <td class="buffer-brainstorm">Buffer</td>
+                <td class="ml">ML Project</td>
                 <td class="buffer-brainstorm">Buffer</td>
             </tr>
             <!-- Saturday -->
@@ -490,7 +508,7 @@ td:hover {
 
     <h2>Important Notes</h2>
     <div class="important-notes-card">
-        <p>☕ Eat a cup of coffee at 1:00 PM.</p>
+        <p>☕ **Eat a cup of coffee at 1:00 PM.**</p>
         <p>Always keep your **coffee mug** with you!</p>
     </div>
 </div>
@@ -500,11 +518,14 @@ const routineTable = document.getElementById("routineTable");
 const tableRows = routineTable.querySelectorAll("tbody tr");
 const toggleLandscapeBtn = document.getElementById("toggleLandscapeBtn");
 const tableContainer = document.getElementById("tableContainer");
+const dailyScheduleTableBody = document.querySelector("#dailyScheduleTable tbody");
 
 function initializeRoutineDisplay() {
     const today = new Date();
     const dayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, ... 6=Saturday
-    const dayMap = { 5:0, 6:1, 0:2, 1:3, 2:4, 3:5, 4:6 };    // Maps JS day index to table row index
+    // Adjusting dayMap to match 0-indexed rows in HTML body after Friday
+    // Friday: 0, Saturday: 1, Sunday: 2, Monday: 3, Tuesday: 4, Wednesday: 5, Thursday: 6
+    const dayMap = { 5:0, 6:1, 0:2, 1:3, 2:4, 3:5, 4:6 };
     const currentDayRowIndex = dayMap[dayOfWeek];
 
     // Remove any existing highlighting classes first
@@ -535,6 +556,8 @@ function initializeRoutineDisplay() {
             }
         });
     });
+
+    displayCurrentDaySchedule(); // Call this to populate the daily schedule table
 }
 
 function toggleTaskCompletion(cell, dayDataset, cellIndex) {
@@ -547,6 +570,8 @@ function toggleTaskCompletion(cell, dayDataset, cellIndex) {
         cell.style.opacity = "0.2";
         localStorage.setItem(key, "done"); // Set item if marked done (dimmed)
     }
+    // Re-display current day's schedule after a change
+    displayCurrentDaySchedule();
 }
 
 function addCellClickListeners() {
@@ -562,6 +587,66 @@ function addCellClickListeners() {
         });
     });
 }
+
+function displayCurrentDaySchedule() {
+    dailyScheduleTableBody.innerHTML = ''; // Clear previous entries
+
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, ... 6=Saturday
+    const dayMap = { 5:0, 6:1, 0:2, 1:3, 2:4, 3:5, 4:6 };
+    const currentDayRowIndex = dayMap[dayOfWeek];
+
+    const currentDayRow = tableRows[currentDayRowIndex];
+    if (!currentDayRow) return; // Exit if no row for today
+
+    const timeHeaders = Array.from(routineTable.querySelectorAll("thead th")).slice(1); // Skip 'Day' header
+    const currentDayCells = Array.from(currentDayRow.querySelectorAll("td"));
+
+    timeHeaders.forEach((header, index) => {
+        let timeSlot = header.textContent.replace(/\s+/g, ' ').trim(); // Clean up text content
+        // Extract only the time range (e.g., "4:00 – 6:00 AM")
+        const timeMatch = timeSlot.match(/(\d{1,2}:\d{2}\s*–\s*\d{1,2}:\d{2}\s*(?:AM|PM))/i);
+        if (timeMatch) {
+            timeSlot = timeMatch[1].trim();
+        }
+
+
+        const activity = currentDayCells[index] ? currentDayCells[index].textContent.trim() : '';
+
+        // Only add rows if there's an activity or it's a prayer/break
+        // Also ensure it's not just "Buffer" if that's not desired in daily view
+        if (activity !== "" && activity !== "Buffer") { /* Added check for "Buffer" */
+            const row = dailyScheduleTableBody.insertRow();
+            const timeCell = row.insertCell();
+            const activityCell = row.insertCell();
+
+            timeCell.textContent = timeSlot;
+            activityCell.textContent = activity;
+
+            // Apply styling classes to the activity cell based on the main table's cell
+            const mainTableCellClasses = Array.from(currentDayCells[index].classList);
+            mainTableCellClasses.forEach(className => {
+                if (className !== 'current-day' && className !== 'dimmed') { // Avoid highlighting classes from main table
+                    activityCell.classList.add(className);
+                }
+            });
+        }
+    });
+
+    // If no activities are listed for today (e.g., all are Buffer or blank), add a note
+    if (dailyScheduleTableBody.rows.length === 0) {
+        const row = dailyScheduleTableBody.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 2; // Span across both columns
+        cell.textContent = "No specific activities scheduled for today. Enjoy your buffer time!";
+        cell.style.fontStyle = "italic";
+        cell.style.color = "#aaa";
+        cell.style.padding = "20px";
+        cell.style.backgroundColor = "#2a2a2a";
+        cell.style.borderRadius = "8px";
+    }
+}
+
 
 // Event listener for the toggle landscape button
 toggleLandscapeBtn.addEventListener("click", () => {
