@@ -187,7 +187,7 @@ td:hover {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; /* This centers the children horizontally */
 }
 
 /* Added overflow-x to dailyScheduleContainer for horizontal scrolling */
@@ -204,12 +204,12 @@ td:hover {
     font-size: 1.8rem;
     margin-bottom: 20px;
     font-weight: 600;
-    text-align: center;
+    text-align: center; /* This centers the text within the h2 */
 }
 
 .namaj-table, .daily-schedule-table {
-    width: 80%;
-    max-width: 400px;
+    width: 95%; /* Increased width */
+    max-width: 800px; /* Increased max-width */
     border-collapse: separate;
     border-spacing: 0 5px;
     text-align: center;
@@ -248,37 +248,59 @@ td:hover {
 
 /* Specific width adjustments for daily-schedule-table */
 .daily-schedule-table th:first-child {
-    width: 15%; /* Checkbox column */
+    width: 10%; /* Checkbox column - slightly narrower */
 }
 .daily-schedule-table td:first-child {
-    width: 15%; /* Checkbox column */
+    width: 10%; /* Checkbox column - slightly narrower */
 }
 .daily-schedule-table th:nth-child(2),
 .daily-schedule-table td:nth-child(2) {
-    width: 30%; /* Time column narrower */
+    width: 25%; /* Time column narrower */
 }
 
 .daily-schedule-table th:last-child,
 .daily-schedule-table td:last-child {
-    width: 55%; /* Activity column wider */
+    width: 65%; /* Activity column wider */
     white-space: normal; /* Allow text to wrap within the wider column */
 }
 
 /* Font size and aesthetics for daily schedule activities */
 .daily-schedule-table td:last-child {
-    font-size: 1.25rem; /* Increased font size */
+    font-size: 1.35rem; /* Increased font size */
     font-weight: 600; /* Bolder */
     text-shadow: 0 0 5px rgba(255,255,255,0.3); /* Subtle glow */
 }
 
 /* Checkbox styling */
-.daily-schedule-table input[type="checkbox"] {
+.daily-schedule-table input[type="checkbox"],
+.namaj-table input[type="checkbox"] { /* Apply to namaj table too */
     transform: scale(1.4); /* Make checkbox slightly larger */
     accent-color: #4CAF50; /* Aesthetic color for the checkbox */
     cursor: pointer;
     vertical-align: middle;
     margin: 0; /* Remove default margin */
 }
+
+/* Namaj table specific column widths for checkbox */
+.namaj-table th:first-child {
+    width: 15%; /* Checkbox column */
+}
+.namaj-table td:first-child {
+    width: 15%; /* Checkbox column */
+}
+.namaj-table th:nth-child(2) {
+    width: 30%; /* Prayer name column */
+}
+.namaj-table td:nth-child(2) {
+    width: 30%; /* Prayer name column */
+}
+.namaj-table th:last-child {
+    width: 55%; /* Time column */
+}
+.namaj-table td:last-child {
+    width: 55%; /* Time column */
+}
+
 
 .important-notes-card {
     background: linear-gradient(135deg, #6A11CB, #2575FC);
@@ -342,6 +364,19 @@ td:hover {
     .daily-schedule-table input[type="checkbox"] {
         transform: scale(1.2);
     }
+    /* Namaj table specific for smaller screens */
+    .namaj-table th:first-child,
+    .namaj-table td:first-child {
+        width: 18%; /* Checkbox column */
+    }
+    .namaj-table th:nth-child(2),
+    .namaj-table td:nth-child(2) {
+        width: 35%; /* Prayer name column */
+    }
+    .namaj-table th:last-child,
+    .namaj-table td:last-child {
+        width: 47%; /* Time column */
+    }
 }
 
 @media (max-width: 480px) {
@@ -392,6 +427,19 @@ td:hover {
     }
     .daily-schedule-table input[type="checkbox"] {
         transform: scale(1.1);
+    }
+    /* Namaj table specific for very small screens */
+    .namaj-table th:first-child,
+    .namaj-table td:first-child {
+        width: 20%;
+    }
+    .namaj-table th:nth-child(2),
+    .namaj-table td:nth-child(2) {
+        width: 40%;
+    }
+    .namaj-table th:last-child,
+    .namaj-table td:last-child {
+        width: 40%;
     }
 }
 </style>
@@ -574,16 +622,37 @@ td:hover {
     <table class="namaj-table">
         <thead>
             <tr>
+                <th>Done</th> <!-- Added checkbox column header -->
                 <th>Prayer</th>
                 <th>Time (Approx.)</th>
             </tr>
         </thead>
         <tbody>
-            <tr><td>Fajar</td><td>5:00 AM</td></tr>
-            <tr><td>Zohar</td><td>1:00 PM</td></tr>
-            <tr><td>Asar</td><td>4:30 PM</td></tr>
-            <tr><td>Magrib</td><td>6:45 PM</td></tr>
-            <tr><td>Esha</td><td>8:30 PM</td></tr>
+            <tr data-prayer="Fajar">
+                <td><input type="checkbox" class="namaj-checkbox"></td>
+                <td>Fajar</td>
+                <td>5:00 AM</td>
+            </tr>
+            <tr data-prayer="Zohar">
+                <td><input type="checkbox" class="namaj-checkbox"></td>
+                <td>Zohar</td>
+                <td>1:00 PM</td>
+            </tr>
+            <tr data-prayer="Asar">
+                <td><input type="checkbox" class="namaj-checkbox"></td>
+                <td>Asar</td>
+                <td>4:30 PM</td>
+            </tr>
+            <tr data-prayer="Magrib">
+                <td><input type="checkbox" class="namaj-checkbox"></td>
+                <td>Magrib</td>
+                <td>6:45 PM</td>
+            </tr>
+            <tr data-prayer="Esha">
+                <td><input type="checkbox" class="namaj-checkbox"></td>
+                <td>Esha</td>
+                <td>8:30 PM</td>
+            </tr>
         </tbody>
     </table>
 
@@ -600,6 +669,7 @@ const tableRows = routineTable.querySelectorAll("tbody tr");
 const toggleLandscapeBtn = document.getElementById("toggleLandscapeBtn");
 const tableContainer = document.getElementById("tableContainer");
 const dailyScheduleTableBody = document.querySelector("#dailyScheduleTable tbody");
+const namajTableBody = document.querySelector(".namaj-table tbody"); // Select namaj table body
 
 function initializeRoutineDisplay() {
     const today = new Date();
@@ -623,10 +693,9 @@ function initializeRoutineDisplay() {
         }
     });
 
-    // Load task completion status from localStorage
+    // Load task completion status from localStorage for main routine table
     tableRows.forEach(row => {
         const dayDataset = row.dataset.day;
-        // Select all `td` elements within the row (excluding the `th` day header)
         const cells = row.querySelectorAll("td");
         cells.forEach((cell,i)=>{
             const key = `${dayDataset}-${i}`; // Unique key for each cell
@@ -639,6 +708,7 @@ function initializeRoutineDisplay() {
     });
 
     displayCurrentDaySchedule(); // Call this to populate the daily schedule table
+    initializeNamajDisplay(); // Initialize namaj checkboxes
 }
 
 function toggleTaskCompletion(cell, dayDataset, cellIndex, isCheckbox = false) {
@@ -716,14 +786,12 @@ function displayCurrentDaySchedule() {
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.checked = isDone;
-            // Add an event listener to the checkbox
             checkbox.addEventListener('change', () => toggleTaskCompletion(checkbox, dayDataset, index, true));
 
             checkboxCell.appendChild(checkbox);
             timeCell.textContent = timeSlot;
             activityCell.textContent = activity;
 
-            // Apply styling classes to the activity cell based on the main table's cell
             const mainTableCellClasses = Array.from(mainTableCell.classList);
             mainTableCellClasses.forEach(className => {
                 if (className !== 'current-day' && className !== 'dimmed') {
@@ -731,7 +799,6 @@ function displayCurrentDaySchedule() {
                 }
             });
 
-            // Visually dim the activity text in the daily schedule if checked
             if (isDone) {
                 activityCell.style.opacity = "0.6";
                 timeCell.style.opacity = "0.6";
@@ -745,7 +812,7 @@ function displayCurrentDaySchedule() {
     if (dailyScheduleTableBody.rows.length === 0) {
         const row = dailyScheduleTableBody.insertRow();
         const cell = row.insertCell();
-        cell.colSpan = 3; // Span across all three columns now
+        cell.colSpan = 3;
         cell.textContent = "No specific activities scheduled for today. Enjoy your buffer time!";
         cell.style.fontStyle = "italic";
         cell.style.color = "#aaa";
@@ -755,6 +822,40 @@ function displayCurrentDaySchedule() {
     }
 }
 
+function initializeNamajDisplay() {
+    const namajRows = namajTableBody.querySelectorAll("tr");
+    namajRows.forEach(row => {
+        const prayerName = row.dataset.prayer;
+        const checkbox = row.querySelector(".namaj-checkbox");
+        const prayerCells = row.querySelectorAll("td:not(:first-child)"); // Select Prayer and Time cells
+
+        const key = `namaj-${prayerName}`;
+        const isDone = localStorage.getItem(key) === "done";
+
+        checkbox.checked = isDone;
+        if (isDone) {
+            prayerCells.forEach(cell => cell.style.opacity = "0.6");
+        } else {
+            prayerCells.forEach(cell => cell.style.opacity = "1");
+        }
+
+        checkbox.addEventListener('change', () => toggleNamajCompletion(checkbox, prayerName));
+    });
+}
+
+function toggleNamajCompletion(checkbox, prayerName) {
+    const key = `namaj-${prayerName}`;
+    const row = checkbox.closest("tr");
+    const prayerCells = row.querySelectorAll("td:not(:first-child)"); // Select Prayer and Time cells
+
+    if (checkbox.checked) {
+        localStorage.setItem(key, "done");
+        prayerCells.forEach(cell => cell.style.opacity = "0.6");
+    } else {
+        localStorage.removeItem(key);
+        prayerCells.forEach(cell => cell.style.opacity = "1");
+    }
+}
 
 // Event listener for the toggle landscape button
 toggleLandscapeBtn.addEventListener("click", () => {
