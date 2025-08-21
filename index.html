@@ -62,8 +62,7 @@ h1 {
     overflow-x: auto; /* Allow horizontal scrolling on small screens */
     overflow-y: hidden; /* Hide vertical overflow */
     display: flex;
-    /* IMPORTANT FIX: Changed to flex-start to ensure left side is always visible */
-    justify-content: flex-start;
+    justify-content: flex-start; /* Ensure left side is always visible */
     align-items: flex-start;
     transition: transform 0.4s ease, width 0.4s ease, height 0.4s ease;
     padding-bottom: 20px; /* Padding for scrollbar */
@@ -71,11 +70,9 @@ h1 {
 
 /* Landscape transform applied to the table container */
 .landscape.table-container {
-    /* When rotated 90deg, viewport height becomes the new width and vice-versa */
     width: 100vh;  /* Container's width is now viewport's height */
     height: 100vw; /* Container's height is now viewport's width */
     transform-origin: top left; /* Rotate around the top-left corner */
-    /* Rotate 90deg clockwise, then translate up by 100% of its NEW height */
     transform: rotate(90deg) translateY(-100%);
     position: absolute; /* Take out of normal document flow for precise positioning */
     top: 0;
@@ -153,15 +150,15 @@ tbody tr {
     transition: opacity 0.3s ease;
 }
 .dimmed {
-    opacity: 0.4;
+    opacity: 0.4 !important;
 }
 .current-day {
-    opacity: 1;
-    font-weight: 600;
-    box-shadow: 0 0 15px rgba(255,255,255,0.6);
-    animation: glow 2s infinite alternate;
+    opacity: 1 !important;
+    font-weight: 700;
+    box-shadow: 0 0 15px rgba(255,255,255,0.8);
     border: 2px solid #ff7eb3;
     border-radius: 12px;
+    animation: glow 2s infinite alternate;
 }
 @keyframes glow {
     0% { box-shadow: 0 0 8px rgba(255,255,255,0.4); border-color: #ff7eb3; }
@@ -240,6 +237,7 @@ td:hover {
             </tr>
         </thead>
         <tbody>
+            <!-- Friday -->
             <tr data-day="Friday">
                 <th>Friday</th>
                 <td class="early">Early Study</td>
@@ -257,6 +255,7 @@ td:hover {
                 <td class="ml">ML Project</td>
                 <td class="blank-cell">Prayer</td>
             </tr>
+            <!-- Saturday -->
             <tr data-day="Saturday">
                 <th>Saturday</th>
                 <td class="early">Early Study</td>
@@ -274,6 +273,7 @@ td:hover {
                 <td class="business">Business Studies</td>
                 <td class="blank-cell">Prayer</td>
             </tr>
+            <!-- Sunday -->
             <tr data-day="Sunday">
                 <th>Sunday</th>
                 <td class="early">Early Study</td>
@@ -291,6 +291,7 @@ td:hover {
                 <td class="biochem">Biochem</td>
                 <td class="blank-cell">Prayer</td>
             </tr>
+            <!-- Monday -->
             <tr data-day="Monday">
                 <th>Monday</th>
                 <td class="early">Early Study</td>
@@ -308,6 +309,7 @@ td:hover {
                 <td class="ml">ML Project</td>
                 <td class="blank-cell">Prayer</td>
             </tr>
+            <!-- Tuesday -->
             <tr data-day="Tuesday">
                 <th>Tuesday</th>
                 <td class="early">Early Study</td>
@@ -325,6 +327,7 @@ td:hover {
                 <td class="business">Business Studies</td>
                 <td class="blank-cell">Prayer</td>
             </tr>
+            <!-- Wednesday -->
             <tr data-day="Wednesday">
                 <th>Wednesday</th>
                 <td class="early">Early Study</td>
@@ -342,6 +345,7 @@ td:hover {
                 <td class="teach-megha">Teach Megha</td>
                 <td class="blank-cell">Prayer</td>
             </tr>
+            <!-- Thursday -->
             <tr data-day="Thursday">
                 <th>Thursday</th>
                 <td class="early">Early Study</td>
@@ -364,118 +368,92 @@ td:hover {
 </div>
 
 <script>
-    // Get references to DOM elements
-    const routineTable = document.getElementById("routineTable");
-    const tableRows = routineTable.querySelectorAll("tbody tr");
-    const toggleLandscapeBtn = document.getElementById("toggleLandscapeBtn");
-    const tableContainer = document.getElementById("tableContainer");
+const routineTable = document.getElementById("routineTable");
+const tableRows = routineTable.querySelectorAll("tbody tr");
+const toggleLandscapeBtn = document.getElementById("toggleLandscapeBtn");
+const tableContainer = document.getElementById("tableContainer");
 
-    /**
-     * Highlights the current day's row and dims others.
-     * Marks completed tasks based on localStorage.
-     */
-    function initializeRoutineDisplay() {
-        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        const today = new Date();
-        // Adjust for current day (Sunday is 0, Monday is 1, etc.)
-        // We want Friday to be index 0 in our table, so we need to map
-        // Friday (5) -> 0, Saturday (6) -> 1, Sunday (0) -> 2, ... Thursday (4) -> 6
-        const dayOfWeek = today.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+function initializeRoutineDisplay() {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, ... 6=Saturday
+    const dayMap = { 5:0, 6:1, 0:2, 1:3, 2:4, 3:5, 4:6 };    // Maps JS day index to table row index
+    const currentDayRowIndex = dayMap[dayOfWeek];
 
-        let currentDayRowIndex;
-        if (dayOfWeek === 5) { // Friday
-            currentDayRowIndex = 0;
-        } else if (dayOfWeek === 6) { // Saturday
-            currentDayRowIndex = 1;
-        } else if (dayOfWeek === 0) { // Sunday
-            currentDayRowIndex = 2;
-        } else { // Monday to Thursday
-            currentDayRowIndex = dayOfWeek + 2; // e.g., Monday (1) + 2 = 3
+    // Remove any existing highlighting classes first
+    tableRows.forEach((row) => {
+        row.classList.remove("current-day", "dimmed");
+    });
+
+    // Apply current-day or dimmed class
+    tableRows.forEach((row, index) => {
+        if(index === currentDayRowIndex) {
+            row.classList.add("current-day");
+        } else {
+            row.classList.add("dimmed");
         }
+    });
 
-        // Apply current-day and dimmed classes
-        tableRows.forEach((row, index) => {
-            row.classList.remove("current-day", "dimmed"); // Clear previous states
-            if (index === currentDayRowIndex) {
-                row.classList.add("current-day");
+    // Load task completion status from localStorage
+    tableRows.forEach(row => {
+        const dayDataset = row.dataset.day;
+        // Select all `td` elements within the row (excluding the `th` day header)
+        const cells = row.querySelectorAll("td");
+        cells.forEach((cell,i)=>{
+            const key = `${dayDataset}-${i}`; // Unique key for each cell
+            if(localStorage.getItem(key) === "done") {
+                cell.style.opacity = "0.2"; // Dim if marked as done
             } else {
-                row.classList.add("dimmed");
+                cell.style.opacity = "1"; // Ensure full opacity if not done
             }
         });
-
-        // Load task completion status from localStorage
-        tableRows.forEach(row => {
-            const dayDataset = row.dataset.day; // Get the data-day attribute (e.g., "Friday")
-            const cells = row.querySelectorAll("td"); // Select all td elements in the row
-            cells.forEach((cell, i) => {
-                // Construct a unique key for localStorage for each cell
-                const localStorageKey = `${dayDataset}-${i}`;
-                if (localStorage.getItem(localStorageKey) === "done") {
-                    cell.style.opacity = "0.2"; // Dim if marked as done
-                } else {
-                    cell.style.opacity = "1"; // Ensure full opacity if not done
-                }
-            });
-        });
-    }
-
-    /**
-     * Toggles the completion status of a task cell and saves to localStorage.
-     * @param {HTMLElement} cell The table cell element that was clicked.
-     * @param {string} dayDataset The 'data-day' attribute of the parent row.
-     * @param {number} cellIndex The index of the cell within its row.
-     */
-    function toggleTaskCompletion(cell, dayDataset, cellIndex) {
-        const localStorageKey = `${dayDataset}-${cellIndex}`;
-        if (cell.style.opacity === "0.2") {
-            cell.style.opacity = "1";
-            localStorage.removeItem(localStorageKey); // Remove item if unmarked
-        } else {
-            cell.style.opacity = "0.2";
-            localStorage.setItem(localStorageKey, "done"); // Set item if marked done
-        }
-    }
-
-    /**
-     * Adds click listeners to each task cell for marking completion.
-     */
-    function addCellClickListeners() {
-        tableRows.forEach(row => {
-            const dayDataset = row.dataset.day;
-            const cells = row.querySelectorAll("td");
-            cells.forEach((cell, i) => {
-                // Ensure only cells with content are clickable for marking done
-                if (cell.textContent.trim() !== "" && !cell.classList.contains('blank-cell')) {
-                    cell.addEventListener("click", () => {
-                        toggleTaskCompletion(cell, dayDataset, i);
-                    });
-                }
-            });
-        });
-    }
-
-    /**
-     * Toggles the landscape view for the table.
-     */
-    toggleLandscapeBtn.addEventListener("click", () => {
-        tableContainer.classList.toggle("landscape");
-        // Adjust button text based on orientation
-        if (tableContainer.classList.contains("landscape")) {
-            toggleLandscapeBtn.textContent = "🔄 Exit Landscape View";
-        } else {
-            toggleLandscapeBtn.textContent = "🌄 Toggle Landscape View";
-        }
     });
+}
 
-    // Initialize display and add listeners when the DOM is fully loaded
-    document.addEventListener("DOMContentLoaded", () => {
-        initializeRoutineDisplay();
-        addCellClickListeners();
+function toggleTaskCompletion(cell, dayDataset, cellIndex) {
+    const key = `${dayDataset}-${cellIndex}`;
+    // Toggle opacity and update localStorage
+    if(cell.style.opacity === "0.2") {
+        cell.style.opacity = "1";
+        localStorage.removeItem(key); // Remove item if unmarked (full opacity)
+    } else {
+        cell.style.opacity = "0.2";
+        localStorage.setItem(key, "done"); // Set item if marked done (dimmed)
+    }
+}
+
+function addCellClickListeners() {
+    tableRows.forEach(row => {
+        const dayDataset = row.dataset.day;
+        // Select all `td` elements in the row for click listeners
+        const cells = row.querySelectorAll("td");
+        cells.forEach((cell,i)=>{
+            // Only add click listener if the cell is not a 'blank-cell' and has content
+            if(cell.textContent.trim() !== "" && !cell.classList.contains('blank-cell')) {
+                cell.addEventListener("click", () => toggleTaskCompletion(cell, dayDataset, i));
+            }
+        });
     });
+}
 
-    // Re-initialize display on window load to ensure all styles are applied
-    window.onload = initializeRoutineDisplay;
+// Event listener for the toggle landscape button
+toggleLandscapeBtn.addEventListener("click", () => {
+    tableContainer.classList.toggle("landscape");
+    // Change button text based on the landscape class presence
+    if (tableContainer.classList.contains("landscape")) {
+        toggleLandscapeBtn.textContent = "🔄 Exit Landscape View";
+    } else {
+        toggleLandscapeBtn.textContent = "🌄 Toggle Landscape View";
+    }
+});
 
+// Initialize display and add listeners when the DOM is fully loaded
+document.addEventListener("DOMContentLoaded", () => {
+    initializeRoutineDisplay();
+    addCellClickListeners();
+});
+
+// Re-initialize display on window load to ensure all styles are applied consistently
+window.onload = initializeRoutineDisplay;
 </script>
 
 </body>
