@@ -127,7 +127,7 @@ th {
 
 /* Specific cell backgrounds using linear gradients */
 .early { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
-.biochem { background: linear-gradient(135deg, #11998e, #38ef7d); }
+/* .biochem { background: linear-gradient(135deg, #11998e, #38ef7d); } Removed as it's replaced by bmb-self */
 .business { background: linear-gradient(135deg, #ee0979, #ff6a00); }
 .ml { background: linear-gradient(135deg, #7F00FF, #E100FF); }
 .other { background: linear-gradient(135deg, #ff9966, #ff5e62); }
@@ -135,10 +135,14 @@ th {
 .buffer-brainstorm { background: linear-gradient(135deg, #fceabb, #fbda61); color: #333; }
 .lab { background: linear-gradient(135deg, #8A2BE2, #A020F0); }
 .teach-megha { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
+.startup { background: linear-gradient(135deg, #f093fb, #f5576c); } /* New gradient for Startup */
+.bmb { background: linear-gradient(135deg, #6a11cb, #2575fc); } /* New gradient for BMB */
+.bmb-self { background: linear-gradient(135deg, #4CAF50, #8BC34A); } /* New gradient for BMB-Self */
+
 
 .two-line-header {
     height: 90px;
-    white-space: normal;
+    white-space: normal; /* Allow text to wrap */
     vertical-align: middle;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -173,6 +177,89 @@ td:hover {
     z-index: 1;
 }
 
+/* New Styles for Namaj Table and Important Notes */
+.notes-container {
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #1a1a1a;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.notes-container h2 {
+    color: #f5f5f5;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.namaj-table {
+    width: 80%;
+    max-width: 400px;
+    border-collapse: separate;
+    border-spacing: 0 5px;
+    text-align: center;
+    margin-bottom: 30px;
+    background-color: #2a2a2a;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.namaj-table th, .namaj-table td {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #fff;
+    vertical-align: middle;
+}
+
+.namaj-table th {
+    background: linear-gradient(135deg, #4CAF50, #2E8B57);
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+}
+
+.namaj-table tr:nth-child(even) td {
+    background-color: #333333;
+}
+
+.namaj-table tr:nth-child(odd) td {
+    background-color: #2a2a2a;
+}
+
+.important-notes-card {
+    background: linear-gradient(135deg, #6A11CB, #2575FC);
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 20px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+
+.important-notes-card p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 10px 0;
+    font-weight: 500;
+}
+
+.important-notes-card strong {
+    color: #ffe0b2;
+}
+
+
 /* Media queries for responsiveness */
 @media (max-width: 768px) {
     h1 {
@@ -185,6 +272,12 @@ td:hover {
     }
     table {
         min-width: 900px;
+    }
+    .namaj-table {
+        width: 95%;
+    }
+    .important-notes-card {
+        width: 95%;
     }
 }
 
@@ -207,6 +300,16 @@ td:hover {
     table {
         min-width: 800px;
     }
+    .notes-container h2 {
+        font-size: 1.5rem;
+    }
+    .namaj-table th, .namaj-table td {
+        font-size: 0.9rem;
+        padding: 8px 10px;
+    }
+    .important-notes-card p {
+        font-size: 1rem;
+    }
 }
 </style>
 </head>
@@ -219,92 +322,92 @@ td:hover {
     <table id="routineTable">
         <thead>
             <tr>
-                <th>Day</th>
-                <th>4:00 – 6:00 AM</th>
-                <th>6:00 – 7:00 AM</th>
-                <th class="two-line-header">7:00 – 8:00 AM<br>Buffer</th>
-                <th>8:00 AM – 1:00 PM</th>
-                <th>1:00 – 2:00 PM<br>Namaj</th>
-                <th>2:00 – 3:00 PM</th>
-                <th>3:00 – 4:00 PM</th>
-                <th>4:00 – 5:00 PM</th>
-                <th>5:00 – 6:00 PM<br>Buffer</th>
-                <th>6:00 – 7:00 PM</th>
-                <th>7:00 – 8:00 PM</th>
-                <th>8:00 – 8:30 PM</th>
-                <th>8:30 – 10:00 PM</th>
-                <th>10:00 – 11:00 PM<br>Namaj</th>
+                <th class="two-line-header">Day</th>
+                <th class="two-line-header">4:00 – 6:00<br>AM</th>
+                <th class="two-line-header">6:00 – 7:00<br>AM</th>
+                <th class="two-line-header">7:00 – 8:00<br>AM<br>Buffer</th>
+                <th class="two-line-header">8:00 AM –<br>1:00 PM</th>
+                <th class="two-line-header">1:00 – 2:00 PM<br>Namaj</th>
+                <th class="two-line-header">2:00 – 3:00<br>PM</th>
+                <th class="two-line-header">3:00 – 4:00<br>PM</th>
+                <th class="two-line-header">4:00 – 5:00<br>PM</th>
+                <th class="two-line-header">5:00 – 6:00 PM<br>Buffer</th>
+                <th class="two-line-header">6:00 – 7:00<br>PM</th>
+                <th class="two-line-header">7:00 – 8:00<br>PM</th>
+                <th class="two-line-header">8:00 – 8:30<br>PM</th>
+                <th class="two-line-header">8:30 – 10:00<br>PM</th>
+                <th class="two-line-header">10:00 – 11:00<br>PM<br>Namaj</th>
             </tr>
         </thead>
         <tbody>
             <!-- Friday -->
             <tr data-day="Friday">
                 <th>Friday</th>
-                <td class="early">Early Study</td>
-                <td class="biochem">Biochem</td>
-                <td class="buffer-brainstorm">Brainstorm</td>
-                <td class="business">Business Studies</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="buffer-brainstorm">Buffer</td>
                 <td class="blank-cell">Prayer</td>
-                <td class="ml">ML Project</td>
-                <td class="other">Research</td>
-                <td class="lab">Lab Work</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="other">Walking Session</td>
                 <td class="buffer-brainstorm">Buffer</td>
                 <td class="teach-megha">Teach Megha</td>
-                <td class="biochem">Biochem</td>
+                <td class="teach-megha">Teach Megha</td>
                 <td class="blank-cell">Break</td>
-                <td class="ml">ML Project</td>
-                <td class="blank-cell">Prayer</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="buffer-brainstorm">Buffer</td>
             </tr>
             <!-- Saturday -->
             <tr data-day="Saturday">
                 <th>Saturday</th>
-                <td class="early">Early Study</td>
-                <td class="ml">ML Project</td>
                 <td class="buffer-brainstorm">Buffer</td>
-                <td class="biochem">Biochem</td>
+                <td class="startup">Startup</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="teach-megha">Teach Megha (8-10 AM)<br>Self-Paced DL (10 AM-1 PM)</td>
                 <td class="blank-cell">Prayer</td>
-                <td class="business">Business Studies</td>
-                <td class="other">Reading</td>
-                <td class="lab">Lab Work</td>
-                <td class="buffer-brainstorm">Brainstorm</td>
-                <td class="biochem">Biochem</td>
-                <td class="teach-megha">Teach Megha</td>
+                <td class="ml">Self-Paced Deep Learning</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="other">Walking Session</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="buffer-brainstorm">Buffer</td>
                 <td class="blank-cell">Break</td>
-                <td class="business">Business Studies</td>
+                <td class="ml">ML Project</td>
                 <td class="blank-cell">Prayer</td>
             </tr>
             <!-- Sunday -->
             <tr data-day="Sunday">
                 <th>Sunday</th>
                 <td class="early">Early Study</td>
-                <td class="business">Business Studies</td>
-                <td class="buffer-brainstorm">Brainstorm</td>
-                <td class="ml">ML Project</td>
-                <td class="blank-cell">Prayer</td>
-                <td class="biochem">Biochem</td>
-                <td class="lab">Lab Work</td>
-                <td class="other">Research</td>
+                <td class="startup">Startup</td>
                 <td class="buffer-brainstorm">Buffer</td>
-                <td class="business">Business Studies</td>
-                <td class="ml">ML Project</td>
+                <td class="bmb">BMB</td>
+                <td class="blank-cell">Prayer</td>
+                <td class="bmb-self">BMB-Self</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="bmb-self">BMB-Self</td>
+                <td class="bmb-self">BMB-Self</td>
+                <td class="buffer-brainstorm">Buffer</td>
                 <td class="blank-cell">Break</td>
-                <td class="biochem">Biochem</td>
+                <td class="ml">ML Project</td>
                 <td class="blank-cell">Prayer</td>
             </tr>
             <!-- Monday -->
             <tr data-day="Monday">
                 <th>Monday</th>
                 <td class="early">Early Study</td>
-                <td class="other">Reading</td>
+                <td class="startup">Startup</td>
                 <td class="buffer-brainstorm">Buffer</td>
-                <td class="biochem">Biochem</td>
+                <td class="bmb">BMB</td>
                 <td class="blank-cell">Prayer</td>
-                <td class="ml">ML Project</td>
-                <td class="business">Business Studies</td>
+                <td class="lab">Lab Work</td>
+                <td class="lab">Lab Work</td>
                 <td class="lab">Lab Work</td>
                 <td class="buffer-brainstorm">Brainstorm</td>
-                <td class="teach-megha">Teach Megha</td>
-                <td class="biochem">Biochem</td>
+                <td class="bmb-self">BMB-Self</td>
+                <td class="bmb-self">BMB-Self</td>
                 <td class="blank-cell">Break</td>
                 <td class="ml">ML Project</td>
                 <td class="blank-cell">Prayer</td>
@@ -313,58 +416,83 @@ td:hover {
             <tr data-day="Tuesday">
                 <th>Tuesday</th>
                 <td class="early">Early Study</td>
-                <td class="ml">ML Project</td>
-                <td class="buffer-brainstorm">Brainstorm</td>
-                <td class="business">Business Studies</td>
-                <td class="blank-cell">Prayer</td>
-                <td class="biochem">Biochem</td>
-                <td class="other">Research</td>
-                <td class="lab">Lab Work</td>
+                <td class="startup">Startup</td>
                 <td class="buffer-brainstorm">Buffer</td>
-                <td class="biochem">Biochem</td>
-                <td class="teach-megha">Teach Megha</td>
+                <td class="bmb">BMB</td>
+                <td class="blank-cell">Prayer</td>
+                <td class="bmb-self">BMB-Self</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="bmb-self">BMB-Self</td>
+                <td class="bmb-self">BMB-Self</td>
+                <td class="buffer-brainstorm">Buffer</td>
                 <td class="blank-cell">Break</td>
-                <td class="business">Business Studies</td>
+                <td class="ml">ML Project</td>
                 <td class="blank-cell">Prayer</td>
             </tr>
             <!-- Wednesday -->
             <tr data-day="Wednesday">
                 <th>Wednesday</th>
                 <td class="early">Early Study</td>
-                <td class="biochem">Biochem</td>
+                <td class="startup">Startup</td>
                 <td class="buffer-brainstorm">Buffer</td>
-                <td class="ml">ML Project</td>
+                <td class="bmb">BMB</td>
                 <td class="blank-cell">Prayer</td>
-                <td class="business">Business Studies</td>
-                <td class="other">Reading</td>
+                <td class="lab">Lab Work</td>
+                <td class="lab">Lab Work</td>
                 <td class="lab">Lab Work</td>
                 <td class="buffer-brainstorm">Brainstorm</td>
-                <td class="ml">ML Project</td>
-                <td class="biochem">Biochem</td>
+                <td class="bmb-self">BMB-Self</td>
+                <td class="bmb-self">BMB-Self</td>
                 <td class="blank-cell">Break</td>
-                <td class="teach-megha">Teach Megha</td>
+                <td class="ml">ML Project</td>
                 <td class="blank-cell">Prayer</td>
             </tr>
             <!-- Thursday -->
             <tr data-day="Thursday">
                 <th>Thursday</th>
                 <td class="early">Early Study</td>
-                <td class="business">Business Studies</td>
-                <td class="buffer-brainstorm">Brainstorm</td>
-                <td class="biochem">Biochem</td>
-                <td class="blank-cell">Prayer</td>
-                <td class="ml">ML Project</td>
-                <td class="other">Research</td>
-                <td class="lab">Lab Work</td>
+                <td class="startup">Startup</td>
                 <td class="buffer-brainstorm">Buffer</td>
-                <td class="biochem">Biochem</td>
-                <td class="ml">ML Project</td>
+                <td class="bmb">BMB</td>
+                <td class="blank-cell">Prayer</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="bmb-self">BMB-Self</td>
+                <td class="bmb-self">BMB-Self</td>
+                <td class="buffer-brainstorm">Buffer</td>
                 <td class="blank-cell">Break</td>
-                <td class="business">Business Studies</td>
+                <td class="ml">ML Project</td>
                 <td class="blank-cell">Prayer</td>
             </tr>
         </tbody>
     </table>
+</div>
+
+<div class="notes-container">
+    <h2>Daily Namaj Times</h2>
+    <table class="namaj-table">
+        <thead>
+            <tr>
+                <th>Prayer</th>
+                <th>Time (Approx.)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Fajar</td><td>5:00 AM</td></tr>
+            <tr><td>Zohar</td><td>1:00 PM</td></tr>
+            <tr><td>Asar</td><td>4:30 PM</td></tr>
+            <tr><td>Magrib</td><td>6:45 PM</td></tr>
+            <tr><td>Esha</td><td>8:30 PM</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Important Notes</h2>
+    <div class="important-notes-card">
+        <p>☕ Eat a cup of coffee at 1:00 PM.</p>
+        <p>Always keep your **coffee mug** with you!</p>
+    </div>
 </div>
 
 <script>
