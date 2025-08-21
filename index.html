@@ -273,7 +273,8 @@ td:hover {
 
 /* Checkbox styling */
 .daily-schedule-table input[type="checkbox"],
-.namaj-table input[type="checkbox"] { /* Apply to namaj table too */
+.namaj-table input[type="checkbox"],
+.todo-list-item input[type="checkbox"] { /* Apply to namaj table too */
     transform: scale(1.4); /* Make checkbox slightly larger */
     accent-color: #4CAF50; /* Aesthetic color for the checkbox */
     cursor: pointer;
@@ -324,6 +325,123 @@ td:hover {
     color: #ffe0b2;
 }
 
+/* To-Do List Specific Styles */
+#todoContainer {
+    max-width: 800px; /* Same max-width as other tables */
+    width: 95%; /* Same width as other tables */
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #1a1a1a;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content within */
+}
+
+#todoInputGroup {
+    display: flex;
+    width: 100%;
+    max-width: 400px; /* Limit input group width */
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+#newTodoTask {
+    flex-grow: 1;
+    padding: 12px;
+    border: 2px solid #6a11cb;
+    border-radius: 10px;
+    background-color: #2a2a2a;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+#newTodoTask:focus {
+    border-color: #2575fc;
+}
+
+#addTodoBtn {
+    background: linear-gradient(135deg, #8A2BE2, #A020F0);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(138, 43, 226, 0.4);
+}
+#addTodoBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(138, 43, 226, 0.6);
+}
+#addTodoBtn:active {
+    transform: translateY(0);
+}
+
+#todoList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 500px; /* Max width for list items */
+}
+
+.todo-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #2a2a2a;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+    color: #fff;
+    transition: opacity 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.todo-list-item.completed {
+    opacity: 0.6;
+    background-color: #333333;
+    text-decoration: line-through;
+    color: #aaa;
+}
+
+.todo-item-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+    text-align: left; /* Ensure text aligns left */
+}
+
+.todo-item-text {
+    word-break: break-word; /* Allow long words to break */
+    white-space: normal; /* Allow text to wrap */
+    flex-grow: 1;
+}
+
+.delete-todo-btn {
+    background: none;
+    border: none;
+    color: #ff5e62;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.delete-todo-btn:hover {
+    background-color: #ff5e62;
+    color: #fff;
+}
 
 /* Media queries for responsiveness */
 @media (max-width: 768px) {
@@ -342,7 +460,7 @@ td:hover {
         width: 95%;
         min-width: 350px; /* Adjusted min-width for smaller screens */
     }
-    .important-notes-card {
+    .important-notes-card, #todoContainer {
         width: 95%;
     }
     /* Adjust for smaller screens */
@@ -361,7 +479,9 @@ td:hover {
     .daily-schedule-table td:last-child {
         font-size: 1.1rem; /* Adjust font size for smaller screens */
     }
-    .daily-schedule-table input[type="checkbox"] {
+    .daily-schedule-table input[type="checkbox"],
+    .namaj-table input[type="checkbox"],
+    .todo-list-item input[type="checkbox"] {
         transform: scale(1.2);
     }
     /* Namaj table specific for smaller screens */
@@ -376,6 +496,18 @@ td:hover {
     .namaj-table th:last-child,
     .namaj-table td:last-child {
         width: 47%; /* Time column */
+    }
+    #todoInputGroup {
+        flex-direction: column;
+        align-items: center;
+    }
+    #newTodoTask {
+        width: calc(100% - 24px); /* Full width minus padding */
+        margin-bottom: 10px;
+    }
+    #addTodoBtn {
+        width: 100%;
+        max-width: 200px; /* Limit button width */
     }
 }
 
@@ -425,7 +557,9 @@ td:hover {
     .daily-schedule-table td:last-child {
         font-size: 1rem; /* Further adjust font size for very small screens */
     }
-    .daily-schedule-table input[type="checkbox"] {
+    .daily-schedule-table input[type="checkbox"],
+    .namaj-table input[type="checkbox"],
+    .todo-list-item input[type="checkbox"] {
         transform: scale(1.1);
     }
     /* Namaj table specific for very small screens */
@@ -663,13 +797,30 @@ td:hover {
     </div>
 </div>
 
+<!-- New To-Do List Section -->
+<div id="todoContainer" class="notes-container">
+    <h2>My To-Do List</h2>
+    <div id="todoInputGroup">
+        <input type="text" id="newTodoTask" placeholder="Add a new task...">
+        <button id="addTodoBtn">Add Task</button>
+    </div>
+    <ul id="todoList">
+        <!-- To-Do items will be populated here by JavaScript -->
+    </ul>
+</div>
+
 <script>
 const routineTable = document.getElementById("routineTable");
 const tableRows = routineTable.querySelectorAll("tbody tr");
 const toggleLandscapeBtn = document.getElementById("toggleLandscapeBtn");
 const tableContainer = document.getElementById("tableContainer");
 const dailyScheduleTableBody = document.querySelector("#dailyScheduleTable tbody");
-const namajTableBody = document.querySelector(".namaj-table tbody"); // Select namaj table body
+const namajTableBody = document.querySelector(".namaj-table tbody");
+const newTodoTaskInput = document.getElementById("newTodoTask");
+const addTodoBtn = document.getElementById("addTodoBtn");
+const todoListUL = document.getElementById("todoList");
+
+// --- Main Routine and Daily Schedule Functions ---
 
 function initializeRoutineDisplay() {
     const today = new Date();
@@ -709,6 +860,7 @@ function initializeRoutineDisplay() {
 
     displayCurrentDaySchedule(); // Call this to populate the daily schedule table
     initializeNamajDisplay(); // Initialize namaj checkboxes
+    renderToDoList(); // Initialize the To-Do list
 }
 
 function toggleTaskCompletion(cell, dayDataset, cellIndex, isCheckbox = false) {
@@ -822,6 +974,8 @@ function displayCurrentDaySchedule() {
     }
 }
 
+// --- Namaj Times Functions ---
+
 function initializeNamajDisplay() {
     const namajRows = namajTableBody.querySelectorAll("tr");
     namajRows.forEach(row => {
@@ -856,6 +1010,106 @@ function toggleNamajCompletion(checkbox, prayerName) {
         prayerCells.forEach(cell => cell.style.opacity = "1");
     }
 }
+
+// --- To-Do List Functions ---
+
+function getToDoTasks() {
+    const tasksString = localStorage.getItem('todoTasks');
+    return tasksString ? JSON.parse(tasksString) : [];
+}
+
+function saveToDoTasks(tasks) {
+    localStorage.setItem('todoTasks', JSON.stringify(tasks));
+}
+
+function renderToDoList() {
+    todoListUL.innerHTML = ''; // Clear existing list
+    const tasks = getToDoTasks();
+
+    if (tasks.length === 0) {
+        const noTasksMessage = document.createElement('li');
+        noTasksMessage.textContent = "No tasks yet! Add one above.";
+        noTasksMessage.style.fontStyle = "italic";
+        noTasksMessage.style.color = "#aaa";
+        noTasksMessage.style.padding = "10px";
+        noTasksMessage.style.textAlign = "center";
+        todoListUL.appendChild(noTasksMessage);
+        return;
+    }
+
+    tasks.forEach((task, index) => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('todo-list-item');
+        if (task.completed) {
+            listItem.classList.add('completed');
+        }
+
+        const contentDiv = document.createElement('div');
+        contentDiv.classList.add('todo-item-content');
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = task.completed;
+        checkbox.addEventListener('change', () => toggleToDoCompletion(index));
+
+        const taskTextSpan = document.createElement('span');
+        taskTextSpan.classList.add('todo-item-text');
+        taskTextSpan.textContent = task.text;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-todo-btn');
+        deleteButton.innerHTML = '&times;'; // 'x' icon
+        deleteButton.title = 'Delete task';
+        deleteButton.addEventListener('click', () => deleteToDoTask(index));
+
+        contentDiv.appendChild(checkbox);
+        contentDiv.appendChild(taskTextSpan);
+        listItem.appendChild(contentDiv);
+        listItem.appendChild(deleteButton);
+        todoListUL.appendChild(listItem);
+    });
+}
+
+function addTodoTask() {
+    const taskText = newTodoTaskInput.value.trim();
+    if (taskText === "") {
+        return; // Don't add empty tasks
+    }
+
+    const tasks = getToDoTasks();
+    tasks.push({ text: taskText, completed: false });
+    saveToDoTasks(tasks);
+    newTodoTaskInput.value = ''; // Clear input field
+    renderToDoList(); // Re-render the list
+}
+
+function toggleToDoCompletion(index) {
+    const tasks = getToDoTasks();
+    if (index >= 0 && index < tasks.length) {
+        tasks[index].completed = !tasks[index].completed;
+        saveToDoTasks(tasks);
+        renderToDoList(); // Re-render to apply dimming/strike-through
+    }
+}
+
+function deleteToDoTask(index) {
+    let tasks = getToDoTasks();
+    if (index >= 0 && index < tasks.length) {
+        tasks.splice(index, 1); // Remove 1 element at the given index
+        saveToDoTasks(tasks);
+        renderToDoList(); // Re-render the list
+    }
+}
+
+// --- Event Listeners and Initialization ---
+
+// Event listener for adding a new to-do task
+addTodoBtn.addEventListener('click', addTodoTask);
+newTodoTaskInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+        addTodoTask();
+    }
+});
 
 // Event listener for the toggle landscape button
 toggleLandscapeBtn.addEventListener("click", () => {
