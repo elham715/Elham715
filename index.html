@@ -190,6 +190,15 @@ td:hover {
     align-items: center;
 }
 
+/* Added overflow-x to dailyScheduleContainer for horizontal scrolling */
+#dailyScheduleContainer {
+    overflow-x: auto;
+    /* Ensure the content inside can grow, and the container handles the scroll */
+    justify-content: flex-start; /* Aligns content to the start */
+    align-items: flex-start; /* Aligns content to the start vertically */
+    padding-bottom: 15px; /* Space for scrollbar */
+}
+
 .notes-container h2 {
     color: #f5f5f5;
     font-size: 1.8rem;
@@ -207,11 +216,11 @@ td:hover {
     margin-bottom: 30px;
     background-color: #2a2a2a;
     border-radius: 10px;
-    overflow: hidden;
+    overflow: hidden; /* This applies to the table itself, not its container */
+    min-width: 380px; /* Ensure a minimum width to enable scrolling if text is long */
 }
 
-.namaj-table th, .namaj-table td,
-.daily-schedule-table th, .daily-schedule-table td {
+.namaj-table th, .namaj-table td {
     padding: 10px 15px;
     border-radius: 8px;
     font-size: 1rem;
@@ -220,7 +229,7 @@ td:hover {
     vertical-align: middle;
 }
 
-.namaj-table th, .daily-schedule-table th {
+.namaj-table th {
     background: linear-gradient(135deg, #4CAF50, #2E8B57);
     color: #fff;
     font-weight: 700;
@@ -229,14 +238,46 @@ td:hover {
     box-shadow: 0 1px 5px rgba(0,0,0,0.2);
 }
 
-.namaj-table tr:nth-child(even) td,
-.daily-schedule-table tr:nth-child(even) td {
+.namaj-table tr:nth-child(even) td {
     background-color: #333333;
 }
 
-.namaj-table tr:nth-child(odd) td,
-.daily-schedule-table tr:nth-child(odd) td {
+.namaj-table tr:nth-child(odd) td {
     background-color: #2a2a2a;
+}
+
+/* Specific width adjustments for daily-schedule-table */
+.daily-schedule-table th:first-child {
+    width: 15%; /* Checkbox column */
+}
+.daily-schedule-table td:first-child {
+    width: 15%; /* Checkbox column */
+}
+.daily-schedule-table th:nth-child(2),
+.daily-schedule-table td:nth-child(2) {
+    width: 30%; /* Time column narrower */
+}
+
+.daily-schedule-table th:last-child,
+.daily-schedule-table td:last-child {
+    width: 55%; /* Activity column wider */
+    white-space: normal; /* Allow text to wrap within the wider column */
+}
+
+/* Font size and aesthetics for daily schedule activities */
+.daily-schedule-table td:last-child {
+    font-size: 1.25rem; /* Increased font size */
+    font-weight: 600; /* Bolder */
+    text-shadow: 0 0 5px rgba(255,255,255,0.3); /* Subtle glow */
+}
+
+/* Checkbox styling */
+.daily-schedule-table input[type="checkbox"] {
+    transform: scale(1.4); /* Make checkbox slightly larger */
+    accent-color: #4CAF50; /* Aesthetic color for the checkbox */
+    cursor: pointer;
+    vertical-align: middle;
+    margin: 0; /* Remove default margin */
 }
 
 .important-notes-card {
@@ -277,9 +318,29 @@ td:hover {
     }
     .namaj-table, .daily-schedule-table {
         width: 95%;
+        min-width: 350px; /* Adjusted min-width for smaller screens */
     }
     .important-notes-card {
         width: 95%;
+    }
+    /* Adjust for smaller screens */
+    .daily-schedule-table th:first-child,
+    .daily-schedule-table td:first-child {
+        width: 18%; /* Checkbox column */
+    }
+    .daily-schedule-table th:nth-child(2),
+    .daily-schedule-table td:nth-child(2) {
+        width: 35%; /* Time column narrower */
+    }
+    .daily-schedule-table th:last-child,
+    .daily-schedule-table td:last-child {
+        width: 47%; /* Activity column wider */
+    }
+    .daily-schedule-table td:last-child {
+        font-size: 1.1rem; /* Adjust font size for smaller screens */
+    }
+    .daily-schedule-table input[type="checkbox"] {
+        transform: scale(1.2);
     }
 }
 
@@ -313,6 +374,25 @@ td:hover {
     .important-notes-card p {
         font-size: 1rem;
     }
+    /* Even tighter for very small screens */
+    .daily-schedule-table th:first-child,
+    .daily-schedule-table td:first-child {
+        width: 20%;
+    }
+    .daily-schedule-table th:nth-child(2),
+    .daily-schedule-table td:nth-child(2) {
+        width: 40%;
+    }
+    .daily-schedule-table th:last-child,
+    .daily-schedule-table td:last-child {
+        width: 40%;
+    }
+    .daily-schedule-table td:last-child {
+        font-size: 1rem; /* Further adjust font size for very small screens */
+    }
+    .daily-schedule-table input[type="checkbox"] {
+        transform: scale(1.1);
+    }
 }
 </style>
 </head>
@@ -326,6 +406,7 @@ td:hover {
     <table id="dailyScheduleTable" class="daily-schedule-table">
         <thead>
             <tr>
+                <th>Done</th> <!-- New column for checkbox -->
                 <th>Time</th>
                 <th>Activity</th>
             </tr>
@@ -352,7 +433,7 @@ td:hover {
                 <th class="two-line-header">5:00 – 6:00 PM<br>Buffer</th>
                 <th class="two-line-header">6:00 – 7:00<br>PM</th>
                 <th class="two-line-header">7:00 – 8:00<br>PM</th>
-                <th class="two-line-header">8:00 – 8:30<br>PM</th>
+                <th class="8:00 – 8:30<br>PM">8:00 – 8:30<br>PM</th>
                 <th class="two-line-header">8:30 – 10:00<br>PM</th>
                 <th class="two-line-header">10:00 – 11:00<br>PM<br>Namaj</th>
             </tr>
@@ -560,15 +641,28 @@ function initializeRoutineDisplay() {
     displayCurrentDaySchedule(); // Call this to populate the daily schedule table
 }
 
-function toggleTaskCompletion(cell, dayDataset, cellIndex) {
+function toggleTaskCompletion(cell, dayDataset, cellIndex, isCheckbox = false) {
     const key = `${dayDataset}-${cellIndex}`;
-    // Toggle opacity and update localStorage
-    if(cell.style.opacity === "0.2") {
-        cell.style.opacity = "1";
-        localStorage.removeItem(key); // Remove item if unmarked (full opacity)
+    const mainTableCell = routineTable.querySelector(`[data-day="${dayDataset}"]`).querySelectorAll('td')[cellIndex];
+
+    if (isCheckbox) {
+        // If triggered by checkbox, update based on checkbox state
+        if (cell.checked) {
+            mainTableCell.style.opacity = "0.2";
+            localStorage.setItem(key, "done");
+        } else {
+            mainTableCell.style.opacity = "1";
+            localStorage.removeItem(key);
+        }
     } else {
-        cell.style.opacity = "0.2";
-        localStorage.setItem(key, "done"); // Set item if marked done (dimmed)
+        // If triggered by main table cell click, toggle state
+        if (mainTableCell.style.opacity === "0.2") {
+            mainTableCell.style.opacity = "1";
+            localStorage.removeItem(key);
+        } else {
+            mainTableCell.style.opacity = "0.2";
+            localStorage.setItem(key, "done");
+        }
     }
     // Re-display current day's schedule after a change
     displayCurrentDaySchedule();
@@ -577,12 +671,10 @@ function toggleTaskCompletion(cell, dayDataset, cellIndex) {
 function addCellClickListeners() {
     tableRows.forEach(row => {
         const dayDataset = row.dataset.day;
-        // Select all `td` elements in the row for click listeners
         const cells = row.querySelectorAll("td");
-        cells.forEach((cell,i)=>{
-            // Only add click listener if the cell is not a 'blank-cell' and has content
+        cells.forEach((cell, i) => {
             if(cell.textContent.trim() !== "" && !cell.classList.contains('blank-cell')) {
-                cell.addEventListener("click", () => toggleTaskCompletion(cell, dayDataset, i));
+                cell.addEventListener("click", () => toggleTaskCompletion(cell, dayDataset, i, false));
             }
         });
     });
@@ -604,40 +696,56 @@ function displayCurrentDaySchedule() {
 
     timeHeaders.forEach((header, index) => {
         let timeSlot = header.textContent.replace(/\s+/g, ' ').trim(); // Clean up text content
-        // Extract only the time range (e.g., "4:00 – 6:00 AM")
         const timeMatch = timeSlot.match(/(\d{1,2}:\d{2}\s*–\s*\d{1,2}:\d{2}\s*(?:AM|PM))/i);
         if (timeMatch) {
             timeSlot = timeMatch[1].trim();
         }
 
-
         const activity = currentDayCells[index] ? currentDayCells[index].textContent.trim() : '';
+        const dayDataset = currentDayRow.dataset.day;
+        const mainTableCell = currentDayCells[index];
+        const key = `${dayDataset}-${index}`;
+        const isDone = localStorage.getItem(key) === "done";
 
-        // Only add rows if there's an activity or it's a prayer/break
-        // Also ensure it's not just "Buffer" if that's not desired in daily view
-        if (activity !== "" && activity !== "Buffer") { /* Added check for "Buffer" */
+        if (activity !== "" && activity !== "Buffer") {
             const row = dailyScheduleTableBody.insertRow();
+            const checkboxCell = row.insertCell();
             const timeCell = row.insertCell();
             const activityCell = row.insertCell();
 
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = isDone;
+            // Add an event listener to the checkbox
+            checkbox.addEventListener('change', () => toggleTaskCompletion(checkbox, dayDataset, index, true));
+
+            checkboxCell.appendChild(checkbox);
             timeCell.textContent = timeSlot;
             activityCell.textContent = activity;
 
             // Apply styling classes to the activity cell based on the main table's cell
-            const mainTableCellClasses = Array.from(currentDayCells[index].classList);
+            const mainTableCellClasses = Array.from(mainTableCell.classList);
             mainTableCellClasses.forEach(className => {
-                if (className !== 'current-day' && className !== 'dimmed') { // Avoid highlighting classes from main table
+                if (className !== 'current-day' && className !== 'dimmed') {
                     activityCell.classList.add(className);
                 }
             });
+
+            // Visually dim the activity text in the daily schedule if checked
+            if (isDone) {
+                activityCell.style.opacity = "0.6";
+                timeCell.style.opacity = "0.6";
+            } else {
+                activityCell.style.opacity = "1";
+                timeCell.style.opacity = "1";
+            }
         }
     });
 
-    // If no activities are listed for today (e.g., all are Buffer or blank), add a note
     if (dailyScheduleTableBody.rows.length === 0) {
         const row = dailyScheduleTableBody.insertRow();
         const cell = row.insertCell();
-        cell.colSpan = 2; // Span across both columns
+        cell.colSpan = 3; // Span across all three columns now
         cell.textContent = "No specific activities scheduled for today. Enjoy your buffer time!";
         cell.style.fontStyle = "italic";
         cell.style.color = "#aaa";
