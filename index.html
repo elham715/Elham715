@@ -4,309 +4,479 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Study Routine To-Do</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  body {
-    font-family: "Poppins", sans-serif;
+/* Base styles for HTML and Body */
+html {
+    overflow-x: hidden; /* Prevent horizontal scrollbar on HTML */
+}
+body {
+    font-family: "Inter", sans-serif;
     background-color: #0d0d0d;
     color: #fff;
     margin: 0;
     padding: 15px;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 80vh;
     flex-direction: column;
-  }
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #f5f5f5;
-    font-size: 2rem;
-    letter-spacing: 1px;
-    padding-top: 15px;
-  }
-  .table-container {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  table {
-    min-width: 900px;
-    border-collapse: separate;
-    border-spacing: 0;
-    text-align: center;
-    margin-bottom: 15px;
-  }
-  th, td {
-    padding: 10px;
-    white-space: nowrap;
-    font-weight: 500;
-    font-size: 14px;
-    border-radius: 8px;
-    transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
-    height: 60px;
-  }
-  th {
-    background: linear-gradient(135deg, #ff7eb3, #ff758c);
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 600;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    box-shadow: 0 3px 5px rgba(0,0,0,0.3);
-  }
-  td {
-    font-size: 14px;
-    font-weight: 500;
-    background-color: #1a1a1a;
-    color: #fff;
-    border: none;
-    margin: 2px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
-    cursor: pointer;
-  }
-  td:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(255,255,255,0.5); }
-  .early           { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
-  .biochem         { background: linear-gradient(135deg, #11998e, #38ef7d); }
-  .business        { background: linear-gradient(135deg, #ee0979, #ff6a00); }
-  .ml              { background: linear-gradient(135deg, #7F00FF, #E100FF); }
-  .other           { background: linear-gradient(135deg, #ff9966, #ff5e62); }
-  .blank-cell      { background: linear-gradient(to right, #000080, #4682B4); }
-  .buffer-brainstorm { background: linear-gradient(135deg, #fceabb, #fbda61); }
-  .lab             { background: linear-gradient(135deg, #8A2BE2, #A020F0); }
-  .teach-megha     { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
-  .biochem-study   { background: linear-gradient(135deg, #A8E063, #56AB2F); }
-  .two-line-header { height: 90px; white-space: normal; vertical-align: middle; }
-
-  .dimmed { opacity: 0.4; transition: opacity 0.3s; }
-  .current-day { opacity: 1; font-weight: 600; box-shadow: 0 0 10px #fff; animation: glow 2s infinite; }
-  @keyframes glow { 0% { box-shadow: 0 0 5px #fff; } 50% { box-shadow: 0 0 20px #ff7eb3; } 100% { box-shadow: 0 0 5px #fff; } }
-
-  .ai-feature-container {
-    background: linear-gradient(135deg, #1f1f1f, #2a2a2a);
-    border-radius: 12px;
-    padding: 25px;
-    margin-top: 30px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.7);
-    text-align: center;
-    width: 95%;
-    max-width: 900px;
+    align-items: center;
+    min-height: 100vh;
     box-sizing: border-box;
-  }
-  .ai-feature-container h2 { color: #ff7eb3; margin-bottom: 20px; font-size: 1.8rem; }
-  .ai-button {
+    overflow-x: hidden; /* Prevent horizontal scrollbar on body */
+}
+
+/* Main heading styling */
+h1 {
+    text-align: center;
+    color: #f5f5f5;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+/* Toggle Landscape Button Styling */
+#toggleLandscapeBtn {
     background: linear-gradient(135deg, #A020F0, #8A2BE2);
     color: #fff;
     border: none;
-    border-radius: 8px;
-    padding: 15px 30px;
+    border-radius: 12px;
+    padding: 12px 25px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
+    margin-bottom: 30px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    margin-bottom: 20px;
-  }
-  .ai-button:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 6px 15px rgba(0,0,0,0.7); }
-  .ai-button:active { transform: translateY(0); box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-  .ai-output-box {
-    background-color: #2b2b2b;
-    border-radius: 8px;
-    padding: 20px;
-    min-height: 80px;
-    text-align: left;
-    line-height: 1.6;
-    font-size: 0.95em;
-    color: #e0e0e0;
-    border: 1px solid #3a3a3a;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
-  }
-  .loading-spinner {
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    border-top: 4px solid #fff;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    animation: spin 1s linear infinite;
-    margin: 20px auto;
-  }
-  .hidden { display: none; }
-  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    box-shadow: 0 4px 15px rgba(160, 32, 240, 0.4);
+}
+#toggleLandscapeBtn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(160, 32, 240, 0.6);
+}
+#toggleLandscapeBtn:active {
+    transform: translateY(1px);
+}
+
+/* Table container for overflow and landscape transform */
+.table-container {
+    width: 100%;
+    max-width: 98vw;
+    overflow-x: auto; /* Allow horizontal scrolling on small screens */
+    overflow-y: hidden; /* Hide vertical overflow */
+    display: flex;
+    /* IMPORTANT FIX: Changed to flex-start to ensure left side is always visible */
+    justify-content: flex-start;
+    align-items: flex-start;
+    transition: transform 0.4s ease, width 0.4s ease, height 0.4s ease;
+    padding-bottom: 20px; /* Padding for scrollbar */
+}
+
+/* Landscape transform applied to the table container */
+.landscape.table-container {
+    /* When rotated 90deg, viewport height becomes the new width and vice-versa */
+    width: 100vh;  /* Container's width is now viewport's height */
+    height: 100vw; /* Container's height is now viewport's width */
+    transform-origin: top left; /* Rotate around the top-left corner */
+    /* Rotate 90deg clockwise, then translate up by 100% of its NEW height */
+    transform: rotate(90deg) translateY(-100%);
+    position: absolute; /* Take out of normal document flow for precise positioning */
+    top: 0;
+    left: 100vw; /* Position to the right edge of the viewport, so rotation brings it into view */
+    margin-bottom: 0; /* Remove potential conflicting margins */
+    padding-bottom: 0; /* Remove potential conflicting paddings */
+}
+
+/* Table styling */
+table {
+    min-width: 1200px; /* Minimum width for the table content in portrait */
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    text-align: center;
+    margin-bottom: 15px;
+    transition: transform 0.4s ease, min-width 0.4s ease;
+    background-color: #1a1a1a;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+/* Adjust table within landscape container */
+.landscape table {
+    width: 100%; /* Make table fill 100% of its rotated parent container */
+    min-width: unset; /* Remove min-width in landscape to allow it to scale */
+    max-width: none; /* No max width */
+}
+
+th, td {
+    padding: 12px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    font-weight: 500;
+    font-size: 0.95rem;
+    height: 65px;
+    color: #fff;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.3s ease;
+    vertical-align: middle;
+}
+
+th {
+    background: linear-gradient(135deg, #ff7eb3, #ff758c);
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+/* Specific cell backgrounds using linear gradients */
+.early { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
+.biochem { background: linear-gradient(135deg, #11998e, #38ef7d); }
+.business { background: linear-gradient(135deg, #ee0979, #ff6a00); }
+.ml { background: linear-gradient(135deg, #7F00FF, #E100FF); }
+.other { background: linear-gradient(135deg, #ff9966, #ff5e62); }
+.blank-cell { background: linear-gradient(135deg, #000080, #4682B4); }
+.buffer-brainstorm { background: linear-gradient(135deg, #fceabb, #fbda61); color: #333; }
+.lab { background: linear-gradient(135deg, #8A2BE2, #A020F0); }
+.teach-megha { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
+
+.two-line-header {
+    height: 90px;
+    white-space: normal;
+    vertical-align: middle;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+/* Dimmed/Current Day Highlighting */
+tbody tr {
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+.dimmed {
+    opacity: 0.4;
+}
+.current-day {
+    opacity: 1;
+    font-weight: 600;
+    box-shadow: 0 0 15px rgba(255,255,255,0.6);
+    animation: glow 2s infinite alternate;
+    border: 2px solid #ff7eb3;
+    border-radius: 12px;
+}
+@keyframes glow {
+    0% { box-shadow: 0 0 8px rgba(255,255,255,0.4); border-color: #ff7eb3; }
+    50% { box-shadow: 0 0 25px rgba(255,255,255,0.8), 0 0 35px rgba(255,126,179,0.8); border-color: #ff7eb3; }
+    100% { box-shadow: 0 0 8px rgba(255,255,255,0.4); border-color: #ff7eb3; }
+}
+
+/* Hover effect for cells */
+td:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 0 25px rgba(255,255,255,0.7);
+    z-index: 1;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+    th, td {
+        padding: 10px 6px;
+        font-size: 0.85rem;
+        height: 55px;
+    }
+    table {
+        min-width: 900px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
+    #toggleLandscapeBtn {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+    }
+    th, td {
+        padding: 8px 4px;
+        font-size: 0.8rem;
+        height: 50px;
+    }
+    table {
+        min-width: 800px;
+    }
+}
 </style>
 </head>
 <body>
-<h1>Weekly Study Routine To-Do</h1>
-<div class="table-container">
-  <table id="routineTable">
-    <thead>
-      <tr>
-        <th>Day</th>
-        <th>4:00 – 6:00</th>
-        <th>6:00 – 7:00 AM</th>
-        <th class="two-line-header">7:00 – 8:00 AM<br>Buffer</th>
-        <th>8:00 AM – 1:00 PM</th>
-        <th>1:00 – 2:00 PM Namaj</th>
-        <th>2:00 – 3:00 PM</th>
-        <th>3:00 – 4:00 PM</th>
-        <th>4:00 – 5:00 PM</th>
-        <th>5:00 – 6:00 PM Buffer</th>
-        <th>6:00 – 7:00 PM</th>
-        <th>7:00 – 8:00 PM</th>
-        <th>8:00 – 8:30 PM</th>
-        <th>8:30 – 10:00 PM</th>
-        <th>10:00 – 11:00 PM Namaj</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr data-day="Friday">
-        <td>Friday</td>
-        <td class="early">Early Rising</td><td class="blank-cell">&nbsp;</td><td class="blank-cell">&nbsp;</td>
-        <td class="blank-cell">&nbsp;</td><td class="other">Namaj</td><td class="blank-cell">&nbsp;</td>
-        <td class="blank-cell">&nbsp;</td><td class="blank-cell">&nbsp;</td><td class="buffer-brainstorm">Buffer</td>
-        <td class="teach-megha">Teach Megha</td><td class="teach-megha">Teach Megha</td>
-        <td class="blank-cell">&nbsp;</td><td class="blank-cell">&nbsp;</td><td class="other">Namaj</td>
-      </tr>
-      <tr data-day="Saturday">
-        <td>Saturday</td>
-        <td class="early">Early Rising</td><td class="teach-megha">Teach Megha</td><td class="teach-megha">Teach Megha</td>
-        <td class="ml">ML/DL</td><td class="other">Namaj</td><td class="blank-cell">&nbsp;</td>
-        <td class="blank-cell">&nbsp;</td><td class="blank-cell">&nbsp;</td><td class="buffer-brainstorm">Buffer</td>
-        <td class="biochem">BMB</td><td class="biochem">BMB</td><td class="other">Eating</td><td class="ml">ML/DL</td><td class="other">Namaj</td>
-      </tr>
-      <tr data-day="Sunday">
-        <td>Sunday</td>
-        <td class="early">Early Rising</td><td class="buffer-brainstorm">Brainstorming</td><td class="buffer-brainstorm">Buffer</td>
-        <td class="biochem">BMB</td><td class="other">Namaj</td><td class="blank-cell">&nbsp;</td>
-        <td class="biochem">BMB</td><td class="biochem">BMB</td><td class="buffer-brainstorm">Buffer</td>
-        <td class="business">Business</td><td class="business">Business</td><td class="other">Eating</td><td class="business">Business</td><td class="other">Namaj</td>
-      </tr>
-      <tr data-day="Monday">
-        <td>Monday</td>
-        <td class="early">Early Rising</td><td class="buffer-brainstorm">Brainstorming</td><td class="buffer-brainstorm">Buffer</td>
-        <td class="biochem">BMB</td><td class="other">Namaj</td><td class="lab">Lab</td>
-        <td class="lab">Lab</td><td class="lab">Lab</td><td class="buffer-brainstorm">Buffer</td>
-        <td class="biochem">BMB</td><td class="biochem">BMB</td><td class="other">Eating</td><td class="ml">ML/DL</td><td class="other">Namaj</td>
-      </tr>
-      <tr data-day="Tuesday">
-        <td>Tuesday</td>
-        <td class="early">Early Rising</td><td class="buffer-brainstorm">Brainstorming</td><td class="buffer-brainstorm">Buffer</td>
-        <td class="biochem">BMB</td><td class="other">Namaj</td><td class="blank-cell">&nbsp;</td>
-        <td class="biochem">BMB</td><td class="biochem">BMB</td><td class="buffer-brainstorm">Buffer</td>
-        <td class="business">Business</td><td class="business">Business</td><td class="other">Eating</td><td class="business">Business</td><td class="other">Namaj</td>
-      </tr>
-      <tr data-day="Wednesday">
-        <td>Wednesday</td>
-        <td class="early">Early Rising</td><td class="buffer-brainstorm">Brainstorming</td><td class="buffer-brainstorm">Buffer</td>
-        <td class="biochem">BMB</td><td class="other">Namaj</td><td class="lab">Lab</td>
-        <td class="lab">Lab</td><td class="lab">Lab</td><td class="buffer-brainstorm">Buffer</td>
-        <td class="biochem">BMB</td><td class="biochem">BMB</td><td class="other">Eating</td><td class="ml">ML/DL</td><td class="other">Namaj</td>
-      </tr>
-      <tr data-day="Thursday">
-        <td>Thursday</td>
-        <td class="early">Early Rising</td><td class="buffer-brainstorm">Brainstorming</td><td class="buffer-brainstorm">Buffer</td>
-        <td class="biochem">BMB</td><td class="other">Namaj</td><td class="blank-cell">&nbsp;</td>
-        <td class="biochem">BMB</td><td class="biochem">BMB</td><td class="buffer-brainstorm">Buffer</td>
-        <td class="business">Business</td><td class="business">Business</td><td class="other">Eating</td><td class="business">Business</td><td class="other">Namaj</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
 
-<div class="ai-feature-container">
-  <h2>Your AI Study Buddy</h2>
-  <button id="getSuggestionBtn" class="ai-button">✨ Get a Study Suggestion ✨</button>
-  <div id="aiSuggestionOutput" class="ai-output-box">
-    Click the button to get personalized study tips or productivity advice!
-  </div>
-  <div id="loadingIndicator" class="loading-spinner hidden"></div>
+<h1>Weekly Study Routine To-Do</h1>
+<button id="toggleLandscapeBtn">🌄 Toggle Landscape View</button>
+
+<div class="table-container" id="tableContainer">
+    <table id="routineTable">
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>4:00 – 6:00 AM</th>
+                <th>6:00 – 7:00 AM</th>
+                <th class="two-line-header">7:00 – 8:00 AM<br>Buffer</th>
+                <th>8:00 AM – 1:00 PM</th>
+                <th>1:00 – 2:00 PM<br>Namaj</th>
+                <th>2:00 – 3:00 PM</th>
+                <th>3:00 – 4:00 PM</th>
+                <th>4:00 – 5:00 PM</th>
+                <th>5:00 – 6:00 PM<br>Buffer</th>
+                <th>6:00 – 7:00 PM</th>
+                <th>7:00 – 8:00 PM</th>
+                <th>8:00 – 8:30 PM</th>
+                <th>8:30 – 10:00 PM</th>
+                <th>10:00 – 11:00 PM<br>Namaj</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-day="Friday">
+                <th>Friday</th>
+                <td class="early">Early Study</td>
+                <td class="biochem">Biochem</td>
+                <td class="buffer-brainstorm">Brainstorm</td>
+                <td class="business">Business Studies</td>
+                <td class="blank-cell">Prayer</td>
+                <td class="ml">ML Project</td>
+                <td class="other">Research</td>
+                <td class="lab">Lab Work</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="teach-megha">Teach Megha</td>
+                <td class="biochem">Biochem</td>
+                <td class="blank-cell">Break</td>
+                <td class="ml">ML Project</td>
+                <td class="blank-cell">Prayer</td>
+            </tr>
+            <tr data-day="Saturday">
+                <th>Saturday</th>
+                <td class="early">Early Study</td>
+                <td class="ml">ML Project</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="biochem">Biochem</td>
+                <td class="blank-cell">Prayer</td>
+                <td class="business">Business Studies</td>
+                <td class="other">Reading</td>
+                <td class="lab">Lab Work</td>
+                <td class="buffer-brainstorm">Brainstorm</td>
+                <td class="biochem">Biochem</td>
+                <td class="teach-megha">Teach Megha</td>
+                <td class="blank-cell">Break</td>
+                <td class="business">Business Studies</td>
+                <td class="blank-cell">Prayer</td>
+            </tr>
+            <tr data-day="Sunday">
+                <th>Sunday</th>
+                <td class="early">Early Study</td>
+                <td class="business">Business Studies</td>
+                <td class="buffer-brainstorm">Brainstorm</td>
+                <td class="ml">ML Project</td>
+                <td class="blank-cell">Prayer</td>
+                <td class="biochem">Biochem</td>
+                <td class="lab">Lab Work</td>
+                <td class="other">Research</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="business">Business Studies</td>
+                <td class="ml">ML Project</td>
+                <td class="blank-cell">Break</td>
+                <td class="biochem">Biochem</td>
+                <td class="blank-cell">Prayer</td>
+            </tr>
+            <tr data-day="Monday">
+                <th>Monday</th>
+                <td class="early">Early Study</td>
+                <td class="other">Reading</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="biochem">Biochem</td>
+                <td class="blank-cell">Prayer</td>
+                <td class="ml">ML Project</td>
+                <td class="business">Business Studies</td>
+                <td class="lab">Lab Work</td>
+                <td class="buffer-brainstorm">Brainstorm</td>
+                <td class="teach-megha">Teach Megha</td>
+                <td class="biochem">Biochem</td>
+                <td class="blank-cell">Break</td>
+                <td class="ml">ML Project</td>
+                <td class="blank-cell">Prayer</td>
+            </tr>
+            <tr data-day="Tuesday">
+                <th>Tuesday</th>
+                <td class="early">Early Study</td>
+                <td class="ml">ML Project</td>
+                <td class="buffer-brainstorm">Brainstorm</td>
+                <td class="business">Business Studies</td>
+                <td class="blank-cell">Prayer</td>
+                <td class="biochem">Biochem</td>
+                <td class="other">Research</td>
+                <td class="lab">Lab Work</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="biochem">Biochem</td>
+                <td class="teach-megha">Teach Megha</td>
+                <td class="blank-cell">Break</td>
+                <td class="business">Business Studies</td>
+                <td class="blank-cell">Prayer</td>
+            </tr>
+            <tr data-day="Wednesday">
+                <th>Wednesday</th>
+                <td class="early">Early Study</td>
+                <td class="biochem">Biochem</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="ml">ML Project</td>
+                <td class="blank-cell">Prayer</td>
+                <td class="business">Business Studies</td>
+                <td class="other">Reading</td>
+                <td class="lab">Lab Work</td>
+                <td class="buffer-brainstorm">Brainstorm</td>
+                <td class="ml">ML Project</td>
+                <td class="biochem">Biochem</td>
+                <td class="blank-cell">Break</td>
+                <td class="teach-megha">Teach Megha</td>
+                <td class="blank-cell">Prayer</td>
+            </tr>
+            <tr data-day="Thursday">
+                <th>Thursday</th>
+                <td class="early">Early Study</td>
+                <td class="business">Business Studies</td>
+                <td class="buffer-brainstorm">Brainstorm</td>
+                <td class="biochem">Biochem</td>
+                <td class="blank-cell">Prayer</td>
+                <td class="ml">ML Project</td>
+                <td class="other">Research</td>
+                <td class="lab">Lab Work</td>
+                <td class="buffer-brainstorm">Buffer</td>
+                <td class="biochem">Biochem</td>
+                <td class="ml">ML Project</td>
+                <td class="blank-cell">Break</td>
+                <td class="business">Business Studies</td>
+                <td class="blank-cell">Prayer</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <script>
-  // Highlight current day
-  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-  const today = days[new Date().getDay()];
+    // Get references to DOM elements
+    const routineTable = document.getElementById("routineTable");
+    const tableRows = routineTable.querySelectorAll("tbody tr");
+    const toggleLandscapeBtn = document.getElementById("toggleLandscapeBtn");
+    const tableContainer = document.getElementById("tableContainer");
 
-  document.querySelectorAll("#routineTable tbody tr").forEach(row=>{
-    if(row.dataset.day === today) row.classList.add("current-day");
-    else row.classList.add("dimmed");
-  });
+    /**
+     * Highlights the current day's row and dims others.
+     * Marks completed tasks based on localStorage.
+     */
+    function initializeRoutineDisplay() {
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const today = new Date();
+        // Adjust for current day (Sunday is 0, Monday is 1, etc.)
+        // We want Friday to be index 0 in our table, so we need to map
+        // Friday (5) -> 0, Saturday (6) -> 1, Sunday (0) -> 2, ... Thursday (4) -> 6
+        const dayOfWeek = today.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
 
-  // Make task cells interactive
-  document.querySelectorAll("#routineTable tbody tr").forEach(row=>{
-    const rowDay = row.dataset.day;
-    row.querySelectorAll("td:not(:first-child)").forEach(cell=>{
-      const key = rowDay+"_"+cell.cellIndex;
-      const original = cell.innerText;
-      cell.dataset.original = original;
-
-      // Load from localStorage
-      if(localStorage.getItem(key) === "done") cell.innerHTML = "&nbsp;";
-
-      cell.addEventListener("click", ()=>{
-        if(cell.innerHTML !== "&nbsp;") {
-          cell.innerHTML = "&nbsp;";
-          localStorage.setItem(key,"done");
-        } else {
-          cell.innerHTML = original;
-          localStorage.removeItem(key);
+        let currentDayRowIndex;
+        if (dayOfWeek === 5) { // Friday
+            currentDayRowIndex = 0;
+        } else if (dayOfWeek === 6) { // Saturday
+            currentDayRowIndex = 1;
+        } else if (dayOfWeek === 0) { // Sunday
+            currentDayRowIndex = 2;
+        } else { // Monday to Thursday
+            currentDayRowIndex = dayOfWeek + 2; // e.g., Monday (1) + 2 = 3
         }
-      });
+
+        // Apply current-day and dimmed classes
+        tableRows.forEach((row, index) => {
+            row.classList.remove("current-day", "dimmed"); // Clear previous states
+            if (index === currentDayRowIndex) {
+                row.classList.add("current-day");
+            } else {
+                row.classList.add("dimmed");
+            }
+        });
+
+        // Load task completion status from localStorage
+        tableRows.forEach(row => {
+            const dayDataset = row.dataset.day; // Get the data-day attribute (e.g., "Friday")
+            const cells = row.querySelectorAll("td"); // Select all td elements in the row
+            cells.forEach((cell, i) => {
+                // Construct a unique key for localStorage for each cell
+                const localStorageKey = `${dayDataset}-${i}`;
+                if (localStorage.getItem(localStorageKey) === "done") {
+                    cell.style.opacity = "0.2"; // Dim if marked as done
+                } else {
+                    cell.style.opacity = "1"; // Ensure full opacity if not done
+                }
+            });
+        });
+    }
+
+    /**
+     * Toggles the completion status of a task cell and saves to localStorage.
+     * @param {HTMLElement} cell The table cell element that was clicked.
+     * @param {string} dayDataset The 'data-day' attribute of the parent row.
+     * @param {number} cellIndex The index of the cell within its row.
+     */
+    function toggleTaskCompletion(cell, dayDataset, cellIndex) {
+        const localStorageKey = `${dayDataset}-${cellIndex}`;
+        if (cell.style.opacity === "0.2") {
+            cell.style.opacity = "1";
+            localStorage.removeItem(localStorageKey); // Remove item if unmarked
+        } else {
+            cell.style.opacity = "0.2";
+            localStorage.setItem(localStorageKey, "done"); // Set item if marked done
+        }
+    }
+
+    /**
+     * Adds click listeners to each task cell for marking completion.
+     */
+    function addCellClickListeners() {
+        tableRows.forEach(row => {
+            const dayDataset = row.dataset.day;
+            const cells = row.querySelectorAll("td");
+            cells.forEach((cell, i) => {
+                // Ensure only cells with content are clickable for marking done
+                if (cell.textContent.trim() !== "" && !cell.classList.contains('blank-cell')) {
+                    cell.addEventListener("click", () => {
+                        toggleTaskCompletion(cell, dayDataset, i);
+                    });
+                }
+            });
+        });
+    }
+
+    /**
+     * Toggles the landscape view for the table.
+     */
+    toggleLandscapeBtn.addEventListener("click", () => {
+        tableContainer.classList.toggle("landscape");
+        // Adjust button text based on orientation
+        if (tableContainer.classList.contains("landscape")) {
+            toggleLandscapeBtn.textContent = "🔄 Exit Landscape View";
+        } else {
+            toggleLandscapeBtn.textContent = "🌄 Toggle Landscape View";
+        }
     });
-  });
 
-  // AI Feature Placeholder
-  async function fetchWithExponentialBackoff(url, options, retries = 3, delay = 1000) {
-    try {
-      const response = await fetch(url, options);
-      if(!response.ok) throw new Error(`HTTP error: ${response.status}`);
-      return await response.json();
-    } catch(error) {
-      if(retries > 0) {
-        await new Promise(res => setTimeout(res, delay));
-        return fetchWithExponentialBackoff(url, options, retries - 1, delay * 2);
-      } else throw error;
-    }
-  }
+    // Initialize display and add listeners when the DOM is fully loaded
+    document.addEventListener("DOMContentLoaded", () => {
+        initializeRoutineDisplay();
+        addCellClickListeners();
+    });
 
-  async function getGeminiSuggestion() {
-    const outputDiv = document.getElementById('aiSuggestionOutput');
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    const getSuggestionBtn = document.getElementById('getSuggestionBtn');
-    outputDiv.innerHTML = '';
-    loadingIndicator.classList.remove('hidden');
-    getSuggestionBtn.disabled = true;
+    // Re-initialize display on window load to ensure all styles are applied
+    window.onload = initializeRoutineDisplay;
 
-    const userPrompt = "Provide a concise, motivating study tip or a productive idea for a short break (5-10 minutes). Keep it under 50 words.";
-    const payload = { contents: [{ role: "user", parts: [{ text: userPrompt }] }] };
-    const apiKey = ""; // Add API key if needed
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-    try {
-      const result = await fetchWithExponentialBackoff(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if(result.candidates?.[0]?.content?.parts?.[0]?.text) {
-        outputDiv.innerText = result.candidates[0].content.parts[0].text;
-      } else {
-        outputDiv.innerText = "Failed to get a suggestion. Try again.";
-      }
-    } catch(error) {
-      outputDiv.innerText = "Error fetching suggestion.";
-      console.error(error);
-    } finally {
-      loadingIndicator.classList.add('hidden');
-      getSuggestionBtn.disabled = false;
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('getSuggestionBtn').addEventListener('click', getGeminiSuggestion);
-  });
 </script>
+
 </body>
 </html>
